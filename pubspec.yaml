@@ -1,0 +1,56 @@
+name: ran_idea_flutter
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  sqflite: ^2.4.3
+  image_picker: ^1.1.2
+  material_symbols_icons: ^4.2750.0
+  cupertino_icons: ^1.0.8
+  shimmer_animation: ^2.2.2+1
+  bottom_navigator: ^0.0.5
+  intl: ^0.20.3
+  lottie: ^3.5.1
+  shared_preferences: ^2.5.5
+  path: ^1.9.1
+  google_fonts: ^6.2.1
+  confetti: ^0.7.0 # Package ditambahkan di sini
+  provider: ^6.1.5+1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.14.3
+  flutter_lints: ^6.0.0
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.png"
+
+flutter:
+  uses-material-design: true
+
+  # WAJIB ADA KODE DI BAWAH INI AGAR GAMBAR TIDAK ERROR
+  assets:
+    - assets/images/tes_logo.png
+    - assets/images/design/
+    - assets/images/supergraphics/
+    - assets/icon/
+    - assets/fonts/
+
+  fonts:
+    - family: Montserrat-Black
+      fonts:
+        - asset: assets/fonts/Montserrat-Black.ttf
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/Montserrat-Black.ttf
+          weight: 900
