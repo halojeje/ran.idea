@@ -193,7 +193,7 @@ class _DashboardpageState extends State<Dashboardpage> {
     );
   }
 
-  // 🟡 MODAL DIALOG "WHAT IS RAN IDEA ANYWAY" (Sesuai main page-modal2.png)
+  // MODAL DIALOG
   void _showWhatIsRanIdeaModal() {
     int currentStep = 0;
     final List<Map<String, String>> modalContents = [
@@ -203,9 +203,9 @@ class _DashboardpageState extends State<Dashboardpage> {
             "This is App for doing idea for your fast project and if you want random creativity for your brain.",
       },
       {
-        "title": "Unleash Creativity",
+        "title": "Generate Ideas",
         "description":
-            "Generate unique design styles, color palettes, and supergraphics in seconds.",
+            "Generate unique design styles, color palettes, and supergraphics in seconds with at least 20+ variants.",
       },
     ];
 
@@ -395,7 +395,7 @@ class _DashboardpageState extends State<Dashboardpage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 1. Header Yellow Banner (Sesuai Layout main page-modal.png)
+                  // 1. Header Yellow Banner
                   Container(
                     color: const Color(0xFFFFC107),
                     padding: const EdgeInsets.symmetric(
@@ -404,7 +404,7 @@ class _DashboardpageState extends State<Dashboardpage> {
                     ),
                     child: Column(
                       children: [
-                        // Row 1: Logo & Profil Avatar Dynamic
+                        // Row 1: Logo & Profil Avatar Dynamic (Identik dengan Katalog Page)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -420,7 +420,7 @@ class _DashboardpageState extends State<Dashboardpage> {
                             ),
                             CircleAvatar(
                               radius: 18,
-                              backgroundColor: Colors.grey[400],
+                              backgroundColor: Colors.white,
                               child: ClipOval(
                                 child:
                                     _userProfilePath != null &&
@@ -434,13 +434,13 @@ class _DashboardpageState extends State<Dashboardpage> {
                                       )
                                     : Image.asset(
                                         'assets/images/apple.png',
-                                        width: 36,
-                                        height: 36,
+                                        width: 32,
+                                        height: 32,
                                         fit: BoxFit.cover,
                                         errorBuilder:
                                             (context, error, stackTrace) =>
                                                 CircleAvatar(
-                                                  radius: 18,
+                                                  radius: 16,
                                                   backgroundColor:
                                                       Colors.grey[400],
                                                   child: const Icon(
@@ -456,7 +456,7 @@ class _DashboardpageState extends State<Dashboardpage> {
                         ),
                         const SizedBox(height: 10),
 
-                        // Row 2: Status Indicator Buttons (Main Page UI)
+                        // Row 2: Status Indicator Buttons
                         Row(
                           children: [
                             // Maskot Icon
@@ -482,7 +482,7 @@ class _DashboardpageState extends State<Dashboardpage> {
                               ),
                             ),
 
-                            // Badge 1: DOING HIS BEST NOW
+                            // Badge 1: GENERATE IDEAS
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 10,
@@ -493,7 +493,7 @@ class _DashboardpageState extends State<Dashboardpage> {
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
-                                "DOING HIS BEST NOW",
+                                "GENERATE IDEAS",
                                 style: GoogleFonts.montserrat(
                                   color: const Color(0xFFFFC107),
                                   fontSize: 10,
@@ -503,7 +503,7 @@ class _DashboardpageState extends State<Dashboardpage> {
                             ),
                             const SizedBox(width: 8),
 
-                            // Badge 2: WHAT IS RAN IDEA ANYWAY (Clickable)
+                            // Badge 2: WHAT IS RAN IDEA ANYWAY
                             Expanded(
                               child: GestureDetector(
                                 onTap: _showWhatIsRanIdeaModal,
