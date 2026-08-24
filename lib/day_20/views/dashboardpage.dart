@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:ran_idea_flutter/day_20/database/preferences.dart';
 import 'package:ran_idea_flutter/day_20/models/favorite_item_model.dart';
 import 'package:ran_idea_flutter/day_20/providers/favorite_provider.dart';
-import 'package:ran_idea_flutter/random_picker/picker_logic.dart';
+import 'package:ran_idea_flutter/day_20/widget/picker_logic.dart';
 
 class Dashboardpage extends StatefulWidget {
   const Dashboardpage({super.key});
@@ -201,11 +201,13 @@ class _DashboardpageState extends State<Dashboardpage> {
         "title": "What is Ran.Idea",
         "description":
             "This is App for doing idea for your fast project and if you want random creativity for your brain.",
+        "image": "assets/images/modal1.png",
       },
       {
         "title": "Generate Ideas",
         "description":
             "Generate unique design styles, color palettes, and supergraphics in seconds with at least 20+ variants.",
+        "image": "assets/images/modal2.png",
       },
     ];
 
@@ -253,15 +255,15 @@ class _DashboardpageState extends State<Dashboardpage> {
                     ),
                     const SizedBox(height: 10),
 
-                    // Logo / Character Maskot
+                    // Gambar Modal Page (modal1.png / modal2.png)
                     SizedBox(
-                      height: 120,
+                      height: 140,
                       child: Image.asset(
-                        'assets/images/tes_logo.png',
+                        modalContents[currentStep]["image"]!,
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) =>
                             const Icon(
-                              Icons.face,
+                              Icons.image,
                               size: 80,
                               color: Colors.black,
                             ),

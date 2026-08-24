@@ -40,7 +40,7 @@ flutter:
 
   # WAJIB ADA KODE DI BAWAH INI AGAR GAMBAR TIDAK ERROR
   assets:
-    - assets/images/tes_logo.png
+    - assets/images/
     - assets/images/design/
     - assets/images/supergraphics/
     - assets/icon/

@@ -42,7 +42,7 @@ class DBHelper {
     print(">>> TABEL USERS BERHASIL DIBUAT DILOKASI SQLITE <<<");
   }
 
-  // REGISTRASI USER (FIXED)
+  // REGISTRASI USER (FIXED) //
   Future<bool> registerUser(UserModelSQL user) async {
     try {
       final db = await database;
@@ -71,7 +71,7 @@ class DBHelper {
     }
   }
 
-  // VALIDASI LOGIN
+  // LOGIN //
   Future<UserModelSQL?> loginUser(String email, String password) async {
     try {
       final db = await database;

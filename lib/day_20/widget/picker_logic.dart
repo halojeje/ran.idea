@@ -6,7 +6,7 @@ import 'dart:math';
 /// Placeholder default saat belum ada ide yang di-pick/dihasilkan.
 const String kPickerPlaceholder = 'Tekan tombol untuk memilih ide';
 
-/// Data Model untuk mewakili satu kombinasi Ide dari CSV RAN.Idea
+/// Data Model Generate dari file CSV //
 class RanIdeaItem {
   final String id;
   final String tipeOutput;

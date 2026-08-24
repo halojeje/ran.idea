@@ -35,7 +35,7 @@ class _FavoritpageState extends State<Favoritpage> {
     _loadUserData();
   }
 
-  // FUNGSI PILIH / EDIT FOTO PROFIL
+  // EDIT FOTO PROFIL //
   Future<void> _pickProfileImage(ImageSource source) async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
@@ -56,7 +56,7 @@ class _FavoritpageState extends State<Favoritpage> {
     }
   }
 
-  // FUNGSI HAPUS FOTO PROFIL
+  // HAPUS FOTO PROFIL //
   Future<void> _deleteProfileImage() async {
     await PreferenceHelper.saveProfileImage(''); // Kosongkan path di Preference
     setState(() {
@@ -64,7 +64,7 @@ class _FavoritpageState extends State<Favoritpage> {
     });
   }
 
-  // MODAL BOTTOM SHEET OPSI EDIT & HAPUS
+  // MODAL BOTTOM OPSI EDIT & HAPUS //
   void _showProfileImagePickerModal() {
     showModalBottomSheet(
       context: context,
@@ -177,7 +177,7 @@ class _FavoritpageState extends State<Favoritpage> {
     );
   }
 
-  // MEMUAT DATA SESI PENGGUNA
+  // MEMUAT DATA SESI PENGGUNA //
   Future<void> _loadUserData() async {
     final email = await PreferenceHelper.getEmail();
     final savedName = await PreferenceHelper.getUserName();
@@ -199,7 +199,7 @@ class _FavoritpageState extends State<Favoritpage> {
     }
   }
 
-  // LOGOUT USER
+  // LOGOUT USER //
   Future<void> _logout() async {
     await PreferenceHelper.clearSession();
     if (!mounted) return;
@@ -210,7 +210,7 @@ class _FavoritpageState extends State<Favoritpage> {
     );
   }
 
-  // MODAL DIALOG DETAIL ITEM FAVORIT
+  // MODAL DIALOG INFO CARD FAVORIT //
   void _showDetailDialog(
     BuildContext context,
     FavoriteItem item,
@@ -457,7 +457,7 @@ class _FavoritpageState extends State<Favoritpage> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. TOP YELLOW BANNER
+            // BG YELLOW BANNER //
             Container(
               color: const Color(0xFFFFC107),
               padding: const EdgeInsets.only(
@@ -554,7 +554,7 @@ class _FavoritpageState extends State<Favoritpage> {
               ),
             ),
 
-            // 3. SEKSI KONTEN "IDE FAVORIT"
+            // IDE FAVORIT //
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
@@ -572,7 +572,7 @@ class _FavoritpageState extends State<Favoritpage> {
                     ),
                     const SizedBox(height: 12),
 
-                    // LIST FAVORIT ATAU EMPTY STATE
+                    // CARD FAVORIT IN EMPTY STATE //
                     favoriteItems.isEmpty
                         ? Container(
                             width: double.infinity,
@@ -623,7 +623,7 @@ class _FavoritpageState extends State<Favoritpage> {
     );
   }
 
-  // 4. KARTU ITEM FAVORIT
+  // CARD ITEM FAVORIT //
   Widget _buildFavoriteCard(
     BuildContext context,
     FavoriteItem item,
