@@ -410,6 +410,7 @@ class _FavoritpageState extends State<Favoritpage> {
     double imageSize = 36,
     bool isEditable = false,
   }) {
+    final double appleSize = imageSize == 36 ? 32 : (imageSize * 32 / 36);
     return GestureDetector(
       onTap: isEditable ? _showProfileImagePickerModal : null,
       child: CircleAvatar(
@@ -428,8 +429,8 @@ class _FavoritpageState extends State<Favoritpage> {
                 )
               : Image.asset(
                   'assets/images/apple.png',
-                  width: imageSize,
-                  height: imageSize,
+                  width: appleSize,
+                  height: appleSize,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => CircleAvatar(
                     radius: radius - 2,

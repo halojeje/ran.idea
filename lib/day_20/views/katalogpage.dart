@@ -292,7 +292,7 @@ class _KatalogpageState extends State<Katalogpage> {
                 ),
                 const SizedBox(width: 14),
 
-                // Detail Teks Katalog
+                // Detail Teks Katalog //
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

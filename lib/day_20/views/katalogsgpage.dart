@@ -48,7 +48,7 @@ class Katalogsgpage extends StatelessWidget {
 
         SizedBox(height: 10),
 
-        // Grid Card yang dibungkus Expanded agar scrollable
+        // Grid Card yang dibungkus Expanded agar scrollable //
         Expanded(
           child: GridView.builder(
             padding: const EdgeInsets.all(16),
@@ -73,26 +73,32 @@ class Katalogsgpage extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.black,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Transform.translate(
         offset: const Offset(-4, -4),
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(color: Colors.black, width: 2),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Image.asset(
-                  imagePath,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    color: Colors.grey[200],
-                    child: const Icon(Icons.image, color: Colors.grey),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(10),
+                  ),
+                  child: Image.asset(
+                    imagePath,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: Colors.grey[200],
+                      child: const Icon(Icons.image, color: Colors.grey),
+                    ),
                   ),
                 ),
               ),
