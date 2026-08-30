@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ran_idea_flutter/day_20/database/dbhelper.dart';
-import 'package:ran_idea_flutter/day_20/database/preferences.dart';
-import 'package:ran_idea_flutter/day_20/views/registerpage.dart';
+import 'package:ran_idea_flutter/ran_idea/database/dbhelper.dart';
+import 'package:ran_idea_flutter/ran_idea/database/preferences.dart';
+import 'package:ran_idea_flutter/ran_idea/views/registerpage.dart';
 import 'package:ran_idea_flutter/extensions/main_navigation.dart';
 
 class LoginPage extends StatefulWidget {
