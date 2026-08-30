@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ran_idea_flutter/day_20/database/dbhelper.dart';
-import 'package:ran_idea_flutter/day_20/database/preferences.dart';
-import 'package:ran_idea_flutter/day_20/models/usermodel.dart';
-import 'package:ran_idea_flutter/day_20/views/loginpage.dart';
+import 'package:ran_idea_flutter/ran_idea/database/dbhelper.dart';
+import 'package:ran_idea_flutter/ran_idea/database/preferences.dart';
+import 'package:ran_idea_flutter/ran_idea/models/usermodel.dart';
+import 'package:ran_idea_flutter/ran_idea/views/loginpage.dart';
 import 'package:ran_idea_flutter/extensions/main_navigation.dart';
 
 class RegisterPage extends StatefulWidget {
