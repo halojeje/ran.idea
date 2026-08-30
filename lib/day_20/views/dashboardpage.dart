@@ -6,10 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:ran_idea_flutter/day_20/database/preferences.dart';
-import 'package:ran_idea_flutter/day_20/models/favorite_item_model.dart';
-import 'package:ran_idea_flutter/day_20/providers/favorite_provider.dart';
-import 'package:ran_idea_flutter/day_20/widget/picker_logic.dart';
+import 'package:ran_idea_flutter/ran_idea/database/preferences.dart';
+import 'package:ran_idea_flutter/ran_idea/models/favorite_item_model.dart';
+import 'package:ran_idea_flutter/ran_idea/providers/favorite_provider.dart';
+import 'package:ran_idea_flutter/ran_idea/views/editgeneratorpage.dart';
+import 'package:ran_idea_flutter/random_picker/generator_settings.dart';
+import 'package:ran_idea_flutter/random_picker/generator_settings_store.dart';
+import 'package:ran_idea_flutter/random_picker/picker_logic.dart';
 
 class Dashboardpage extends StatefulWidget {
   const Dashboardpage({super.key});
@@ -33,10 +36,14 @@ class _DashboardpageState extends State<Dashboardpage> {
   Timer? _timer;
   RanIdeaItem _currentIdea = RanIdeaDataset.generateRandomIdea();
 
+  // Konfigurasi manual/random per-field dari layar "Edit Generator".
+  GeneratorSettings _settings = GeneratorSettings.defaults;
+
   @override
   void initState() {
     super.initState();
     _loadUserProfile();
+    _loadGeneratorSettings();
   }
 
   @override
@@ -52,6 +59,30 @@ class _DashboardpageState extends State<Dashboardpage> {
       setState(() {
         _userProfilePath = imagePath;
       });
+    }
+  }
+
+  // MEMUAT PENGATURAN GENERATOR (manual/random per-field) YANG TERSIMPAN
+  Future<void> _loadGeneratorSettings() async {
+    final settings = await GeneratorSettingsStore.load();
+    if (!mounted) return;
+    setState(() {
+      _settings = settings;
+      // Idea awal (yang dibuat sinkron saat field diinisialisasi) belum tahu
+      // soal setting manual, jadi digenerate ulang di sini supaya konsisten.
+      _currentIdea = RanIdeaDataset.generateIdea(_settings);
+    });
+  }
+
+  // Membuka layar "Edit Generator"; jika pengguna menyimpan perubahan,
+  // setting dimuat ulang dan ide saat ini dibuat ulang agar langsung terlihat.
+  Future<void> _openEditGenerator() async {
+    final saved = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(builder: (_) => const Editgeneratorpage()),
+    );
+    if (saved == true) {
+      await _loadGeneratorSettings();
     }
   }
 
@@ -75,7 +106,7 @@ class _DashboardpageState extends State<Dashboardpage> {
 
     _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
       setState(() {
-        _currentIdea = RanIdeaDataset.generateRandomIdea();
+        _currentIdea = RanIdeaDataset.generateIdea(_settings);
       });
 
       count++;
@@ -484,22 +515,25 @@ class _DashboardpageState extends State<Dashboardpage> {
                               ),
                             ),
 
-                            // Badge 1: GENERATE IDEAS
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                "GENERATE IDEAS",
-                                style: GoogleFonts.montserrat(
-                                  color: const Color(0xFFFFC107),
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
+                            // Badge 1: GENERATE IDEAS -> buka Edit Generator
+                            GestureDetector(
+                              onTap: _openEditGenerator,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.black,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  "GENERATE IDEAS",
+                                  style: GoogleFonts.montserrat(
+                                    color: const Color(0xFFFFC107),
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
@@ -587,16 +621,25 @@ class _DashboardpageState extends State<Dashboardpage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    _buildLabelText("OUTPUT"),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      _currentIdea.tipeOutput,
-                                      style: GoogleFonts.montserrat(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: const Color(0xFF4648D4),
+                                    if (_currentIdea.tipeOutput.isNotEmpty) ...[
+                                      _buildLabelText("OUTPUT"),
+                                      const SizedBox(height: 2),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                          vertical: 2,
+                                        ),
+                                        color: const Color(0xFFFFC107),
+                                        child: Text(
+                                          _currentIdea.tipeOutput,
+                                          style: GoogleFonts.montserrat(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ],
                                 ),
                               ),
@@ -608,9 +651,7 @@ class _DashboardpageState extends State<Dashboardpage> {
                                     title: _currentIdea.temaIde,
                                     theme: _currentIdea.mainDesignStyle,
                                     supergraphics: _currentIdea.supergraphics,
-                                    imagePath: _getSupergraphicsImage(
-                                      _currentIdea.supergraphics,
-                                    ),
+                                    imagePath: _resolveIdeaImagePath(),
                                     colors: _currentIdea.colorPaletteHex
                                         .map((hex) => _hexToColor(hex))
                                         .toList(),
@@ -644,102 +685,124 @@ class _DashboardpageState extends State<Dashboardpage> {
                           ),
                           const SizedBox(height: 14),
 
-                          _buildLabelText("CONCEPT TITLE"),
-                          const SizedBox(height: 2),
-                          _buildValueText(_currentIdea.temaIde),
-                          const SizedBox(height: 14),
+                          if (_currentIdea.temaIde.isNotEmpty) ...[
+                            _buildLabelText("CONCEPT TITLE"),
+                            const SizedBox(height: 2),
+                            _buildValueText(_currentIdea.temaIde),
+                            const SizedBox(height: 14),
+                          ],
 
-                          _buildLabelText("THEME"),
-                          const SizedBox(height: 2),
-                          _buildValueText(_currentIdea.mainDesignStyle),
-                          const SizedBox(height: 14),
+                          if (_currentIdea.mainDesignStyle.isNotEmpty) ...[
+                            _buildLabelText("THEME"),
+                            const SizedBox(height: 2),
+                            _buildValueText(_currentIdea.mainDesignStyle),
+                            const SizedBox(height: 14),
+                          ],
 
-                          _buildLabelText("SUPERGRAPHICS"),
-                          const SizedBox(height: 2),
-                          _buildValueText(_currentIdea.supergraphics),
-                          const SizedBox(height: 10),
+                          if (_currentIdea.supergraphics.isNotEmpty) ...[
+                            _buildLabelText("SUPERGRAPHICS"),
+                            const SizedBox(height: 2),
+                            _buildValueText(_currentIdea.supergraphics),
+                            const SizedBox(height: 10),
+                          ],
 
-                          GestureDetector(
-                            onTap: _showImagePickerModal,
-                            child: Container(
-                              height: 125,
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(4),
-                                border: Border.all(
-                                  color: Colors.black,
-                                  width: 2,
-                                ),
-                                boxShadow: const [
-                                  BoxShadow(
+                          // Kotak gambar hanya tampil kalau Theme atau
+                          // Supergraphics masih dicentang (ada sumber gambar
+                          // yang relevan untuk ditampilkan).
+                          if (_currentIdea.supergraphics.isNotEmpty ||
+                              _currentIdea.mainDesignStyle.isNotEmpty) ...[
+                            GestureDetector(
+                              onTap: _showImagePickerModal,
+                              child: Container(
+                                height: 125,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(
                                     color: Colors.black,
-                                    offset: Offset(2, 2),
-                                    blurRadius: 0,
+                                    width: 2,
                                   ),
-                                ],
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(2),
-                                child: _selectedImage != null
-                                    ? Image.file(
-                                        _selectedImage!,
-                                        fit: BoxFit.cover,
-                                        width: double.infinity,
-                                      )
-                                    : Image.asset(
-                                        _getSupergraphicsImage(
-                                          _currentIdea.supergraphics,
-                                        ),
-                                        key: ValueKey(
-                                          _currentIdea.supergraphics,
-                                        ),
-                                        fit: BoxFit.cover,
-                                        width: double.infinity,
-                                        errorBuilder:
-                                            (
-                                              context,
-                                              error,
-                                              stackTrace,
-                                            ) => Image.asset(
-                                              _getThemeImage(
-                                                _currentIdea.mainDesignStyle,
-                                              ),
-                                              fit: BoxFit.cover,
-                                              width: double.infinity,
-                                              errorBuilder:
-                                                  (
-                                                    context,
-                                                    error,
-                                                    stackTrace,
-                                                  ) => Container(
-                                                    color: Colors.grey[200],
-                                                    child: const Center(
-                                                      child: Icon(
-                                                        Icons.image,
-                                                        size: 40,
-                                                        color: Colors.grey,
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.black,
+                                      offset: Offset(2, 2),
+                                      blurRadius: 0,
+                                    ),
+                                  ],
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(2),
+                                  child: _selectedImage != null
+                                      ? Image.file(
+                                          _selectedImage!,
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                        )
+                                      : _currentIdea.supergraphics.isNotEmpty
+                                      ? Image.asset(
+                                          _getSupergraphicsImage(
+                                            _currentIdea.supergraphics,
+                                          ),
+                                          key: ValueKey(
+                                            _currentIdea.supergraphics,
+                                          ),
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  _currentIdea
+                                                      .mainDesignStyle
+                                                      .isNotEmpty
+                                                  ? Image.asset(
+                                                      _getThemeImage(
+                                                        _currentIdea
+                                                            .mainDesignStyle,
                                                       ),
-                                                    ),
-                                                  ),
-                                            ),
-                                      ),
+                                                      fit: BoxFit.cover,
+                                                      width: double.infinity,
+                                                      errorBuilder:
+                                                          (
+                                                            context,
+                                                            error,
+                                                            stackTrace,
+                                                          ) =>
+                                                              _buildImagePlaceholder(),
+                                                    )
+                                                  : _buildImagePlaceholder(),
+                                        )
+                                      : Image.asset(
+                                          _getThemeImage(
+                                            _currentIdea.mainDesignStyle,
+                                          ),
+                                          key: ValueKey(
+                                            _currentIdea.mainDesignStyle,
+                                          ),
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  _buildImagePlaceholder(),
+                                        ),
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 18),
+                            const SizedBox(height: 18),
+                          ],
 
-                          _buildLabelText("COLOR PALETTE"),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: _currentIdea.colorPaletteHex.map((hex) {
-                              return _buildCircleColorBox(
-                                _hexToColor(hex),
-                                hex,
-                              );
-                            }).toList(),
-                          ),
+                          if (_currentIdea.colorPaletteHex.isNotEmpty) ...[
+                            _buildLabelText("COLOR PALETTE"),
+                            const SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: _currentIdea.colorPaletteHex.map((hex) {
+                                return _buildCircleColorBox(
+                                  _hexToColor(hex),
+                                  hex,
+                                );
+                              }).toList(),
+                            ),
+                          ],
 
                           const SizedBox(height: 24),
 
@@ -809,6 +872,28 @@ class _DashboardpageState extends State<Dashboardpage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // Menentukan gambar mana yang relevan buat idea saat ini, dengan prioritas
+  // yang sama seperti kotak gambar di kartu: Supergraphics dulu, baru Theme,
+  // string kosong kalau dua-duanya di-uncheck (dipakai juga saat simpan Favorit
+  // supaya konten yang tersimpan konsisten dengan yang terlihat di dashboard).
+  String _resolveIdeaImagePath() {
+    if (_currentIdea.supergraphics.isNotEmpty) {
+      return _getSupergraphicsImage(_currentIdea.supergraphics);
+    } else if (_currentIdea.mainDesignStyle.isNotEmpty) {
+      return _getThemeImage(_currentIdea.mainDesignStyle);
+    }
+    return '';
+  }
+
+  Widget _buildImagePlaceholder() {
+    return Container(
+      color: Colors.grey[200],
+      child: const Center(
+        child: Icon(Icons.image, size: 40, color: Colors.grey),
       ),
     );
   }
