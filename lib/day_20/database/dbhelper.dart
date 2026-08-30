@@ -1,5 +1,5 @@
 import 'package:path/path.dart';
-import 'package:ran_idea_flutter/day_20/models/usermodel.dart';
+import 'package:ran_idea_flutter/ran_idea/models/usermodel.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DBHelper {
@@ -42,7 +42,7 @@ class DBHelper {
     print(">>> TABEL USERS BERHASIL DIBUAT DILOKASI SQLITE <<<");
   }
 
-  // REGISTRASI USER (FIXED) //
+  // REGISTRASI USER (FIXED)
   Future<bool> registerUser(UserModelSQL user) async {
     try {
       final db = await database;
@@ -71,7 +71,7 @@ class DBHelper {
     }
   }
 
-  // LOGIN //
+  // VALIDASI LOGIN
   Future<UserModelSQL?> loginUser(String email, String password) async {
     try {
       final db = await database;
