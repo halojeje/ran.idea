@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:ran_idea_flutter/day_20/database/preferences.dart';
-import 'package:ran_idea_flutter/day_20/models/favorite_item_model.dart';
-import 'package:ran_idea_flutter/day_20/providers/favorite_provider.dart';
-import 'package:ran_idea_flutter/day_20/views/loginpage.dart';
+import 'package:ran_idea_flutter/ran_idea/database/preferences.dart';
+import 'package:ran_idea_flutter/ran_idea/models/favorite_item_model.dart';
+import 'package:ran_idea_flutter/ran_idea/providers/favorite_provider.dart';
+import 'package:ran_idea_flutter/ran_idea/views/loginpage.dart';
 
 class Favoritpage extends StatefulWidget {
   const Favoritpage({super.key});
@@ -35,7 +35,7 @@ class _FavoritpageState extends State<Favoritpage> {
     _loadUserData();
   }
 
-  // EDIT FOTO PROFIL //
+  // FUNGSI PILIH / EDIT FOTO PROFIL
   Future<void> _pickProfileImage(ImageSource source) async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
@@ -56,7 +56,7 @@ class _FavoritpageState extends State<Favoritpage> {
     }
   }
 
-  // HAPUS FOTO PROFIL //
+  // FUNGSI HAPUS FOTO PROFIL
   Future<void> _deleteProfileImage() async {
     await PreferenceHelper.saveProfileImage(''); // Kosongkan path di Preference
     setState(() {
@@ -64,7 +64,7 @@ class _FavoritpageState extends State<Favoritpage> {
     });
   }
 
-  // MODAL BOTTOM OPSI EDIT & HAPUS //
+  // MODAL BOTTOM SHEET OPSI EDIT & HAPUS
   void _showProfileImagePickerModal() {
     showModalBottomSheet(
       context: context,
@@ -177,7 +177,7 @@ class _FavoritpageState extends State<Favoritpage> {
     );
   }
 
-  // MEMUAT DATA SESI PENGGUNA //
+  // MEMUAT DATA SESI PENGGUNA
   Future<void> _loadUserData() async {
     final email = await PreferenceHelper.getEmail();
     final savedName = await PreferenceHelper.getUserName();
@@ -199,7 +199,7 @@ class _FavoritpageState extends State<Favoritpage> {
     }
   }
 
-  // LOGOUT USER //
+  // LOGOUT USER
   Future<void> _logout() async {
     await PreferenceHelper.clearSession();
     if (!mounted) return;
@@ -210,7 +210,7 @@ class _FavoritpageState extends State<Favoritpage> {
     );
   }
 
-  // MODAL DIALOG INFO CARD FAVORIT //
+  // MODAL DIALOG DETAIL ITEM FAVORIT
   void _showDetailDialog(
     BuildContext context,
     FavoriteItem item,
@@ -261,78 +261,106 @@ class _FavoritpageState extends State<Favoritpage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildLabelText("OUTPUT"),
-                        _buildValueText(item.category),
-                        const SizedBox(height: 12),
-
-                        _buildLabelText("CONCEPT TITLE"),
-                        _buildValueText(item.title),
-                        const SizedBox(height: 12),
-
-                        _buildLabelText("THEME"),
-                        _buildValueText(item.theme),
-                        const SizedBox(height: 12),
-
-                        _buildLabelText("SUPERGRAPHICS"),
-                        _buildValueText(item.supergraphics),
-                        const SizedBox(height: 12),
-
-                        Container(
-                          height: 130,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.black, width: 2),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.asset(
-                              item.imagePath,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Container(color: Colors.grey[200]),
+                        if (item.category.isNotEmpty) ...[
+                          _buildLabelText("OUTPUT"),
+                          const SizedBox(height: 2),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
+                            color: const Color(0xFFFFC107),
+                            child: Text(
+                              item.category,
+                              style: GoogleFonts.montserrat(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 16),
+                          const SizedBox(height: 12),
+                        ],
 
-                        _buildLabelText("COLOR PALETTE"),
-                        const SizedBox(height: 8),
+                        if (item.title.isNotEmpty) ...[
+                          _buildLabelText("CONCEPT TITLE"),
+                          _buildValueText(item.title),
+                          const SizedBox(height: 12),
+                        ],
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: List.generate(item.colors.length, (index) {
-                            final color = item.colors[index];
-                            final hex = item.hexColors.length > index
-                                ? item.hexColors[index]
-                                : '#000000';
-                            return Column(
-                              children: [
-                                Container(
-                                  width: 44,
-                                  height: 44,
-                                  decoration: BoxDecoration(
-                                    color: color,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: Colors.black26,
-                                      width: 1,
+                        if (item.theme.isNotEmpty) ...[
+                          _buildLabelText("THEME"),
+                          _buildValueText(item.theme),
+                          const SizedBox(height: 12),
+                        ],
+
+                        if (item.supergraphics.isNotEmpty) ...[
+                          _buildLabelText("SUPERGRAPHICS"),
+                          _buildValueText(item.supergraphics),
+                          const SizedBox(height: 12),
+                        ],
+
+                        if (item.imagePath.isNotEmpty) ...[
+                          Container(
+                            height: 130,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.black, width: 2),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.asset(
+                                item.imagePath,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Container(color: Colors.grey[200]),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+
+                        if (item.colors.isNotEmpty) ...[
+                          _buildLabelText("COLOR PALETTE"),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: List.generate(item.colors.length, (
+                              index,
+                            ) {
+                              final color = item.colors[index];
+                              final hex = item.hexColors.length > index
+                                  ? item.hexColors[index]
+                                  : '#000000';
+                              return Column(
+                                children: [
+                                  Container(
+                                    width: 44,
+                                    height: 44,
+                                    decoration: BoxDecoration(
+                                      color: color,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.black26,
+                                        width: 1,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  hex,
-                                  style: GoogleFonts.montserrat(
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.grey[700],
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    hex,
+                                    style: GoogleFonts.montserrat(
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.grey[700],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            );
-                          }),
-                        ),
+                                ],
+                              );
+                            }),
+                          ),
+                        ],
                         const SizedBox(height: 20),
                       ],
                     ),
@@ -410,7 +438,6 @@ class _FavoritpageState extends State<Favoritpage> {
     double imageSize = 36,
     bool isEditable = false,
   }) {
-    final double appleSize = imageSize == 36 ? 32 : (imageSize * 32 / 36);
     return GestureDetector(
       onTap: isEditable ? _showProfileImagePickerModal : null,
       child: CircleAvatar(
@@ -429,8 +456,8 @@ class _FavoritpageState extends State<Favoritpage> {
                 )
               : Image.asset(
                   'assets/images/apple.png',
-                  width: appleSize,
-                  height: appleSize,
+                  width: imageSize,
+                  height: imageSize,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => CircleAvatar(
                     radius: radius - 2,
@@ -458,7 +485,7 @@ class _FavoritpageState extends State<Favoritpage> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // BG YELLOW BANNER //
+            // 1. TOP YELLOW BANNER
             Container(
               color: const Color(0xFFFFC107),
               padding: const EdgeInsets.only(
@@ -555,7 +582,7 @@ class _FavoritpageState extends State<Favoritpage> {
               ),
             ),
 
-            // IDE FAVORIT //
+            // 3. SEKSI KONTEN "IDE FAVORIT"
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
@@ -573,7 +600,7 @@ class _FavoritpageState extends State<Favoritpage> {
                     ),
                     const SizedBox(height: 12),
 
-                    // CARD FAVORIT IN EMPTY STATE //
+                    // LIST FAVORIT ATAU EMPTY STATE
                     favoriteItems.isEmpty
                         ? Container(
                             width: double.infinity,
@@ -624,7 +651,7 @@ class _FavoritpageState extends State<Favoritpage> {
     );
   }
 
-  // CARD ITEM FAVORIT //
+  // 4. KARTU ITEM FAVORIT
   Widget _buildFavoriteCard(
     BuildContext context,
     FavoriteItem item,
@@ -654,14 +681,23 @@ class _FavoritpageState extends State<Favoritpage> {
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.black, width: 1.5),
                   ),
-                  child: Image.asset(
-                    item.imagePath,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      color: Colors.grey[200],
-                      child: const Icon(Icons.image, color: Colors.grey),
-                    ),
-                  ),
+                  child: item.imagePath.isNotEmpty
+                      ? Image.asset(
+                          item.imagePath,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
+                                color: Colors.grey[200],
+                                child: const Icon(
+                                  Icons.image,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                        )
+                      : Container(
+                          color: Colors.grey[200],
+                          child: const Icon(Icons.image, color: Colors.grey),
+                        ),
                 ),
               ),
               const SizedBox(width: 14),
@@ -690,26 +726,28 @@ class _FavoritpageState extends State<Favoritpage> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 6),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFC107),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.black, width: 1.5),
-                      ),
-                      child: Text(
-                        item.category.toUpperCase(),
-                        style: GoogleFonts.montserrat(
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                    if (item.category.isNotEmpty) ...[
+                      const SizedBox(height: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFC107),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.black, width: 1.5),
+                        ),
+                        child: Text(
+                          item.category.toUpperCase(),
+                          style: GoogleFonts.montserrat(
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),
