@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ran_idea_flutter/day_20/models/favorite_item_model.dart';
+import 'package:ran_idea_flutter/ran_idea/models/favorite_item_model.dart';
 
 class FavoriteProvider extends ChangeNotifier {
   final List<FavoriteItem> _favoriteItems = [];
