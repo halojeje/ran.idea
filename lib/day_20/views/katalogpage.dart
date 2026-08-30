@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ran_idea_flutter/day_20/database/data_katalogitem.dart';
-import 'package:ran_idea_flutter/day_20/database/preferences.dart';
-import 'package:ran_idea_flutter/day_20/models/katalogitem_model.dart';
-import 'package:ran_idea_flutter/day_20/views/katalog/katalog_detail_page.dart';
-import 'package:ran_idea_flutter/day_20/views/katalogsgpage.dart';
+import 'package:ran_idea_flutter/ran_idea/database/data_katalogitem.dart';
+import 'package:ran_idea_flutter/ran_idea/database/preferences.dart';
+import 'package:ran_idea_flutter/ran_idea/models/katalogitem_model.dart';
+import 'package:ran_idea_flutter/ran_idea/views/katalog/katalog_detail_page.dart';
+import 'package:ran_idea_flutter/ran_idea/views/katalogsgpage.dart';
 
 class Katalogpage extends StatefulWidget {
   const Katalogpage({super.key});
@@ -292,7 +292,7 @@ class _KatalogpageState extends State<Katalogpage> {
                 ),
                 const SizedBox(width: 14),
 
-                // Detail Teks Katalog //
+                // Detail Teks Katalog
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
